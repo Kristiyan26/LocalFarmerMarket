@@ -1,0 +1,56 @@
+﻿@model LocalFarmerMarket.Core.Models.RequestDTOs.RegisterRequest
+
+@{
+    ViewData["HideHeader"] = true;
+}
+
+<div class="container">
+    <div class="register-form">
+        <h2>Create an Account</h2>
+        <p>Join us today and start exploring fresh local products!</p>
+
+        <form asp-controller="Auth" asp-action="Register" method="post">
+            <div class="form-group">
+                <label for="Username">Username</label>
+                <input type="text" id="Username" name="Username" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <input type="password" id="Password" name="Password" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="FirstName">First Name</label>
+                <input type="text" id="FirstName" name="FirstName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="LastName">Last Name</label>
+                <input type="text" id="LastName" name="LastName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="email" id="Email" name="Email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Role">Account Type</label>
+                <select id="Role" name="Role" class="form-control" required>
+                    <option value="Customer">Customer</option>
+                    <option value="Farmer">Farmer</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+        <p>Already have an account? <a asp-controller="Account" asp-action="Login">Log in here</a></p>
+
+        @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+        }
+    </div>
+</div>

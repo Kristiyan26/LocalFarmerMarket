@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using LocalFarmerMarket.Core.Entities;
-
-
-
+using LocalFarmerMarket.Core.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace LocalFarmerMarket.Data
 {
@@ -19,24 +18,113 @@ namespace LocalFarmerMarket.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
 
-
-            modelBuilder.Entity<OrderProduct>()
-                .HasKey(op => new { op.OrderId, op.ProductId });
-
-            modelBuilder.Entity<OrderProduct>()
-                .HasOne(op => op.Order)
-                .WithMany(o => o.OrderProducts)
-                .HasForeignKey(op => op.OrderId);
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalPrice)
+                .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<OrderProduct>()
-                .HasOne(op => op.Product)
-                .WithMany(p => p.OrderProducts)
-                .HasForeignKey(op => op.ProductId);
+                .Property(op => op.PricePerKgAtPurchaseTime)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.PricePerKg)
+                .HasColumnType("decimal(18,2)");
+
+            var passwordHasher = new PasswordHasher<User>();
+
+
+            modelBuilder.Entity<Farmer>().HasData(
+        new Farmer
+        {
+            Id = 1,
+            Username = "JohnFarmer",
+            Password = passwordHasher.HashPassword(null, "securepassword"), // 🔹 Hashed password
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@farm.com",
+            Address = "Green Fields, Asenovgrad",
+            PhoneNumber = "0888123456",
+            Role = "Farmer"
+        }
+    );
+
+            // ✅ Seed Customers
+            modelBuilder.Entity<Customer>().HasData(
+                new Customer
+                {
+                    Id = 1,
+                    Username = "KriskoVliza",
+                    Password = passwordHasher.HashPassword(null, "securepassword"), // 🔹 Hashed password
+                    FirstName = "Kristiyan",
+                    LastName = "Lyubenov",
+                    Email = "Krisko@mail.bg",
+                    Address = "Asenovgrad han krum 1",
+                    PhoneNumber = "088888888",
+                    Role = "Customer"
+                }
+            );
+
+            // ✅ Seed Categories
+            modelBuilder.Entity<Category>().HasData(
+                new Category
+                {
+                    Id = 1,
+                    Name = "Fruits",
+                    IsOrganic = true,
+                    TypicalSeasonStart = new DateTime(2025, 04, 01),
+                    TypicalSeasonEnd = new DateTime(2025, 10, 31)
+                }
+            );
+
+            // ✅ Seed Products Linked to Farmer & Category
+            modelBuilder.Entity<Product>().HasData(
+                new Product
+                {
+                    Id = 1,
+                    Name = "Organic Apples",
+                    Description = "Freshly harvested organic apples",
+                    PricePerKg = 3.5m,
+                    QuantityAvailable = 50,
+                    HarvestDate = new DateTime(2025, 05, 25),
+                    FarmerId = 1,  // 🔹 Linked to seeded Farmer
+                    CategoryId = 1,  // 🔹 Linked to seeded Category
+                    ImageUrl = "https://example.com/test-image.png"
+                }
+            );
+
+            // ✅ Seed Orders
+            modelBuilder.Entity<Order>().HasData(
+                new Order
+                {
+                    Id = 1,
+                    CustomerId = 1,
+                    OrderDate = new DateTime(2025, 05, 25),
+                    Status = "Completed",
+                    TotalPrice = 17.5m,
+                    DeliveryDate = new DateTime(2025, 05, 28)
+                }
+            );
+
+            // ✅ Seed OrderProduct Mapping
+            modelBuilder.Entity<OrderProduct>().HasData(
+                new OrderProduct
+                {
+                    Id = 1,
+                    OrderId = 1,
+                    ProductId = 1,
+                    Quantity = 5,
+                    PricePerKgAtPurchaseTime = 3.5m
+                }
+            );
+        }
         }
     }
-}

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocalFarmerMarket.Data.Migrations
 {
     [DbContext(typeof(LocalFarmerMarketDbContext))]
-    [Migration("20250511180823_Initial")]
-    partial class Initial
+    [Migration("20250525131541_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,7 @@ namespace LocalFarmerMarket.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Category", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,9 +53,19 @@ namespace LocalFarmerMarket.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsOrganic = true,
+                            Name = "Fruits",
+                            TypicalSeasonEnd = new DateTime(2025, 10, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TypicalSeasonStart = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Customer", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,25 +83,55 @@ namespace LocalFarmerMarket.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<DateTime>("RegisteredOn")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Customer");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Asenovgrad han krum 1",
+                            Email = "Krisko@mail.bg",
+                            FirstName = "Kristiyan",
+                            LastName = "Lyubenov",
+                            Password = "AQAAAAIAAYagAAAAENPrhUZYVcpP8EZ8E8FL/DggYjAqGiywXK4X4Z/lcA/oLoQCK7Qehr9q4Bdql026tg==",
+                            PhoneNumber = "088888888",
+                            Role = "Customer",
+                            Username = "KriskoVliza"
+                        });
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Farmer", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Farmer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,35 +139,65 @@ namespace LocalFarmerMarket.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Location")
+                    b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<DateTime>("RegisteredOn")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Farmers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Green Fields, Asenovgrad",
+                            Email = "johndoe@farm.com",
+                            FirstName = "John",
+                            LastName = "Doe",
+                            Password = "AQAAAAIAAYagAAAAEOdkEizlr3qoQCK2caqF/6r/WdhejcU9nL2vO0p5UFrcEYHMtvXwfsm+iavjN1RLew==",
+                            PhoneNumber = "0888123456",
+                            Role = "Farmer",
+                            Username = "JohnFarmer"
+                        });
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Order", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,8 +216,7 @@ namespace LocalFarmerMarket.Data.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -157,27 +226,56 @@ namespace LocalFarmerMarket.Data.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CustomerId = 1,
+                            DeliveryDate = new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Completed",
+                            TotalPrice = 17.5m
+                        });
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.OrderProduct", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.OrderProduct", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PricePerKgAtPurchaseTime")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Quantity")
                         .HasColumnType("float");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            OrderId = 1,
+                            PricePerKgAtPurchaseTime = 3.5m,
+                            ProductId = 1,
+                            Quantity = 5.0
+                        });
                 });
 
             modelBuilder.Entity("Product", b =>
@@ -202,6 +300,10 @@ namespace LocalFarmerMarket.Data.Migrations
                     b.Property<DateTime>("HarvestDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -220,11 +322,25 @@ namespace LocalFarmerMarket.Data.Migrations
                     b.HasIndex("FarmerId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Description = "Freshly harvested organic apples",
+                            FarmerId = 1,
+                            HarvestDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ImageUrl = "https://example.com/test-image.png",
+                            Name = "Organic Apples",
+                            PricePerKg = 3.5m,
+                            QuantityAvailable = 50.0
+                        });
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Order", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Order", b =>
                 {
-                    b.HasOne("LocalFarmerMarket.Core.Entities.Customer", "Customer")
+                    b.HasOne("LocalFarmerMarket.Core.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -233,9 +349,9 @@ namespace LocalFarmerMarket.Data.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.OrderProduct", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.OrderProduct", b =>
                 {
-                    b.HasOne("LocalFarmerMarket.Core.Entities.Order", "Order")
+                    b.HasOne("LocalFarmerMarket.Core.Models.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -254,13 +370,13 @@ namespace LocalFarmerMarket.Data.Migrations
 
             modelBuilder.Entity("Product", b =>
                 {
-                    b.HasOne("LocalFarmerMarket.Core.Entities.Category", "Category")
+                    b.HasOne("LocalFarmerMarket.Core.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LocalFarmerMarket.Core.Entities.Farmer", "Farmer")
+                    b.HasOne("LocalFarmerMarket.Core.Models.Farmer", "Farmer")
                         .WithMany("Products")
                         .HasForeignKey("FarmerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -271,22 +387,22 @@ namespace LocalFarmerMarket.Data.Migrations
                     b.Navigation("Farmer");
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Category", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Customer", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Customer", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Farmer", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Farmer", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("LocalFarmerMarket.Core.Entities.Order", b =>
+            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Order", b =>
                 {
                     b.Navigation("OrderProducts");
                 });

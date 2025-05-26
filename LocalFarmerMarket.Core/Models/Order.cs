@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace LocalFarmerMarket.Core.Entities
+namespace LocalFarmerMarket.Core.Models
 {
-    public class Order
+    public class Order :BaseEntity
     {
-        public int Id { get; set; }
 
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
 
-        [Range(0, double.MaxValue)]
         public decimal TotalPrice { get; set; }
 
         public DateTime DeliveryDate { get; set; }
 
         [Required]
-        [MaxLength(20)]
+
         public string Status { get; set; } // e.g., "Pending", "Completed"
 
+    [JsonIgnore]
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
 }

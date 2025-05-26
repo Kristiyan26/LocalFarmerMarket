@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using LocalFarmerMarket.Data;
+using LocalFarmerMarket.Core.Models;
+using LocalFarmerMarket.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
+using LocalFarmerMarket.Services;
+
 
 namespace LocalFarmerMarket
 {
@@ -11,11 +16,16 @@ namespace LocalFarmerMarket
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddDbContext<LocalFarmerMarketDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-                .UseLazyLoadingProxies();
-            });
+
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession();
+
+
+            builder.Services.AddScoped<IPasswordHasher<Customer>, PasswordHasher<Customer>>();
+            builder.Services.AddHttpClient<ApiClient>();
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -31,12 +41,13 @@ namespace LocalFarmerMarket
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }

@@ -1,9 +1,11 @@
-﻿using LocalFarmerMarket.Core.Entities;
+﻿using LocalFarmerMarket.Core.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-public class Product
+public class Product : BaseEntity
 {
-    public int Id { get; set; }
+
 
     [Required]
     [MaxLength(50)]
@@ -12,10 +14,10 @@ public class Product
     [MaxLength(200)]
     public string Description { get; set; }
 
-    [Range(0.1, 10000)]
+
     public decimal PricePerKg { get; set; }
 
-    [Range(0, double.MaxValue)]
+
     public double QuantityAvailable { get; set; }
 
     public DateTime HarvestDate { get; set; }
@@ -24,7 +26,14 @@ public class Product
     public virtual Farmer Farmer { get; set; }
 
     public int CategoryId { get; set; }
+
     public virtual Category Category { get; set; }
 
+
+    [JsonIgnore]
     public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+    public string ImageUrl { get; set; }
+
+
+
 }

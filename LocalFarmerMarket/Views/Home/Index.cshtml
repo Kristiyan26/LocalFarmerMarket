@@ -1,0 +1,44 @@
+﻿@model LocalFarmerMarket.ViewModels.Home.IndexVM
+
+<!-- 🛒 Shop Page -->
+<div class="container mt-5">
+    <h1 class="text-center mb-4">🌿 Fresh & Organic Market</h1>
+
+    <!-- Responsive Grid for Products -->
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card product-card mb-4 shadow-sm">
+                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="text-muted">@product.Description</p>
+                        <p class="fw-bold text-success">💰 @product.PricePerKg €/kg</p>
+                        <p>📦 Available: <span class="fw-bold">@product.QuantityAvailable kg</span></p>
+                        <p>🌱 Harvested on: <span class="fw-bold">@product.HarvestDate.ToString("yyyy-MM-dd")</span></p>
+                        <a href="#" class="btn btn-primary w-100 mt-2">🛒 Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Custom Styling -->
+<style>
+    .product-card {
+        border-radius: 10px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .product-card:hover {
+        transform: scale(1.05);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px 10px 0 0;
+    }
+</style>

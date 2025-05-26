@@ -1,0 +1,35 @@
+﻿@model LocalFarmerMarket.Core.Models.RequestDTOs.LoginRequest
+
+@{
+    ViewData["HideHeader"] = true;
+}
+
+
+
+<div class="container">
+    <div class="login-form">
+        <h2>Welcome Back!</h2>
+        <p>Please enter your credentials to log in.</p>
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <div class="form-group">
+                <label for="Username">Username</label>
+                <input type="text" id="Username" name="Username" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <input type="password" id="Password" name="Password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <p>Don't have an account? <a asp-controller="Account" asp-action="Register">Sign up here</a></p>
+
+        @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+        }
+    </div>
+</div>

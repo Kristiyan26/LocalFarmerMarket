@@ -1,20 +1,27 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-namespace LocalFarmerMarket.Core.Entities
+namespace LocalFarmerMarket.Core.Models
 {
-    public class OrderProduct
+    public class OrderProduct : BaseEntity
     {
+
         public int OrderId { get; set; }
+
+
         public virtual Order Order { get; set; }
 
         public int ProductId { get; set; }
+
+
         public virtual Product Product { get; set; }
 
-        [Range(0.1, double.MaxValue)]
+
         public double Quantity { get; set; } // e.g., kg
 
-        [Range(0.1, 10000)]
+
         public decimal PricePerKgAtPurchaseTime { get; set; }
     }
 }
