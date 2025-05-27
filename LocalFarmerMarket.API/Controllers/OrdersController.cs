@@ -26,13 +26,12 @@ namespace LocalFarmerMarket.API.Controllers
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            // ✅ Safely Parse Customer ID
+
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int customerId))
             {
                 return Unauthorized(new { message = "Invalid authentication token." });
             }
 
-            // ✅ Fetch Customer's Orders
             var orders = _ordersRepo.GetAll(o => o.CustomerId == customerId).ToList();
 
             if (!orders.Any())
@@ -40,18 +39,19 @@ namespace LocalFarmerMarket.API.Controllers
                 return NotFound(new { message = "No orders found." });
             }
 
-            // ✅ Map Orders to DTO Format
             var ordersList = orders.Select(order =>
             {
                 var product = _productsRepo.GetFirstOrDefault(p => p.Id == order.ProductId);
 
+                Console.WriteLine("product name:"+product.Name);
+
                 return new OrderDTO
                 {
+                    ProductName = product.Name, //order.Product.Name,
                     Id = order.Id,
-                    //ProductName = product.Name ?? "Unknown Product",
                     QuantityOrdered = order.Quantity,
                     TotalPrice = order.TotalPrice,
-                    OrderDate = order.OrderDate, // ✅ Readable date formatting
+                    OrderDate = order.OrderDate,
                     Status = order.Status
                 };
             }).ToList();

@@ -41,7 +41,7 @@ namespace LocalFarmerMarket.Controllers
                 return Unauthorized(new { message = "Invalid authentication token." });
             }
 
-            int customerId = int.Parse(userIdClaim.Value); // ✅ Extract the ID
+            int customerId = int.Parse(userIdClaim.Value);
 
 
             //var purchaseRequest = new ProductPurchaseRequest
@@ -51,7 +51,7 @@ namespace LocalFarmerMarket.Controllers
             //    Quantity = request.Quantity
             //};
 
-            request.CustomerId = customerId; // ✅ Set the CustomerId in the request
+            request.CustomerId = customerId; 
             var response = await _apiClient.PostAsync<PurchaseResponse>("api/Products/purchase", request);
             if (response==null)
             {
@@ -60,7 +60,7 @@ namespace LocalFarmerMarket.Controllers
 
             }
 
-            return RedirectToAction("OrderHistory"); // ✅ Redirect user to the orders page
+            return RedirectToAction("OrderHistory"); 
         }
 
         public async Task<IActionResult> OrdersHistory()

@@ -11,7 +11,7 @@
                 <div class="col-md-6">
                     <div class="card mb-4 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">🛒 @order.ProductName</h5>
+                            <h5 class="card-title">🛒 @order.ProductName.ToString()</h5>
                             <p class="text-muted">Ordered on: @order.OrderDate.ToString("yyyy-MM-dd")</p>
                             <p>Quantity: <b>@order.QuantityOrdered kg</b></p>
                             <p>Total Price: <b>@order.TotalPrice €</b></p>

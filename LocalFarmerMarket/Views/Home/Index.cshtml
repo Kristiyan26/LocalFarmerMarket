@@ -79,12 +79,14 @@
                 })
             });
 
-            const result = await response.json();
-            if (response.ok) {
-                window.location.href = "/Orders/OrdersHistory";
-            } else {
-                alert(result.message || "Failed to complete purchase.");
-            }
+             window.location.href = "/Orders/OrdersHistory";
+
+            @* const result = await response.json(); *@
+            @* if (response.ok) { *@
+               
+            @* } else { *@
+            @*     alert(result.message || "Failed to complete purchase."); *@
+            @* } *@
         } catch (error) {
             console.error("Error purchasing product:", error);
             alert("Something went wrong. Please try again.");
