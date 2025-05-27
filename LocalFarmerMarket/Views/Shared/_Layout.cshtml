@@ -1,4 +1,23 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var token = Context.Session.GetString("Token");
+    var userRole = "";
+
+    if (!string.IsNullOrEmpty(token))
+    {
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+        var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Azp);
+
+        if (roleClaim != null)
+        {
+            userRole = roleClaim.Value;
+        }
+    }
+}
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -62,25 +81,38 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 @if (!ViewData["HideHeader"]?.Equals(true) ?? true)
                 {
-
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
+                            <a class="nav-link" href="/Home/Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Account/Login">Login</a>
-                        </li>
-                       
+
+                        @if (string.IsNullOrEmpty(token))
+                        {
+                            <!-- Show Login only when NOT logged in -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Account/Login">Login</a>
+                            </li>
+                        }
+                        else if (userRole == "Customer")
+                        {
+                            <!-- Show Purchase History only for Customers -->
                             <li class="nav-item">
                                 <a class="nav-link" href="/Orders/OrdersHistory">📜 Order History</a>
-                           </li>
-                        
+                            </li>
+                        }
+                        else if (userRole == "Farmer")
+                        {
+                            <!-- Show Add Product only for Farmers -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Products/AddProduct">➕ Add Product</a>
+                            </li>
+                        }
                     </ul>
                 }
-
             </div>
         </div>
     </nav>
+
 
     <header class="bg-light py-5 shadow-sm">
         <div class="container text-center">
