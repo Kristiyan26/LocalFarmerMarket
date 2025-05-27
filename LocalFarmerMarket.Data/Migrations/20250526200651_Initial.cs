@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LocalFarmerMarket.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,29 +68,6 @@ namespace LocalFarmerMarket.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customer_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customer",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -123,27 +100,29 @@ namespace LocalFarmerMarket.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderProducts",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<double>(type: "float", nullable: false),
-                    PricePerKgAtPurchaseTime = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProducts", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderProducts_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
+                        name: "FK_Orders_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderProducts_Products_ProductId",
+                        name: "FK_Orders_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -158,42 +137,27 @@ namespace LocalFarmerMarket.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Customer",
                 columns: new[] { "Id", "Address", "Email", "FirstName", "LastName", "Password", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 1, "Asenovgrad han krum 1", "Krisko@mail.bg", "Kristiyan", "Lyubenov", "AQAAAAIAAYagAAAAENPrhUZYVcpP8EZ8E8FL/DggYjAqGiywXK4X4Z/lcA/oLoQCK7Qehr9q4Bdql026tg==", "088888888", "Customer", "KriskoVliza" });
+                values: new object[] { 1, "Asenovgrad han krum 1", "Krisko@mail.bg", "Kristiyan", "Lyubenov", "AQAAAAIAAYagAAAAECgEUuBVWEJELb+K6dOKHWN43jABCsrHBu1liZNCw7v7FEM7t05CYzJpXa13+Qca7w==", "088888888", "Customer", "KriskoVliza" });
 
             migrationBuilder.InsertData(
                 table: "Farmers",
                 columns: new[] { "Id", "Address", "Email", "FirstName", "LastName", "Password", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 1, "Green Fields, Asenovgrad", "johndoe@farm.com", "John", "Doe", "AQAAAAIAAYagAAAAEOdkEizlr3qoQCK2caqF/6r/WdhejcU9nL2vO0p5UFrcEYHMtvXwfsm+iavjN1RLew==", "0888123456", "Farmer", "JohnFarmer" });
-
-            migrationBuilder.InsertData(
-                table: "Orders",
-                columns: new[] { "Id", "CustomerId", "DeliveryDate", "OrderDate", "Status", "TotalPrice" },
-                values: new object[] { 1, 1, new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", 17.5m });
+                values: new object[] { 1, "Green Fields, Asenovgrad", "johndoe@farm.com", "John", "Doe", "AQAAAAIAAYagAAAAEDVsXccfwWvlagmOZHjs0yX3l89FOeEoObyIC5DmKFKSzOm6uebED8Ed54F5TSJ1uA==", "0888123456", "Farmer", "JohnFarmer" });
 
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "CategoryId", "Description", "FarmerId", "HarvestDate", "ImageUrl", "Name", "PricePerKg", "QuantityAvailable" },
                 values: new object[] { 1, 1, "Freshly harvested organic apples", 1, new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "https://example.com/test-image.png", "Organic Apples", 3.5m, 50.0 });
 
-            migrationBuilder.InsertData(
-                table: "OrderProducts",
-                columns: new[] { "Id", "OrderId", "PricePerKgAtPurchaseTime", "ProductId", "Quantity" },
-                values: new object[] { 1, 1, 3.5m, 1, 5.0 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderProducts_OrderId",
-                table: "OrderProducts",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderProducts_ProductId",
-                table: "OrderProducts",
-                column: "ProductId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ProductId",
+                table: "Orders",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -210,16 +174,13 @@ namespace LocalFarmerMarket.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderProducts");
-
-            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Customer");
 
             migrationBuilder.DropTable(
-                name: "Customer");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Categories");

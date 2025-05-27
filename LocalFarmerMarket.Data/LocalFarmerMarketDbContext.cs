@@ -16,7 +16,6 @@ namespace LocalFarmerMarket.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<OrderProduct> OrderProducts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -31,9 +30,6 @@ namespace LocalFarmerMarket.Data
                 .Property(o => o.TotalPrice)
                 .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<OrderProduct>()
-                .Property(op => op.PricePerKgAtPurchaseTime)
-                .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<Product>()
                 .Property(p => p.PricePerKg)
@@ -101,30 +97,7 @@ namespace LocalFarmerMarket.Data
                 }
             );
 
-            // ✅ Seed Orders
-            modelBuilder.Entity<Order>().HasData(
-                new Order
-                {
-                    Id = 1,
-                    CustomerId = 1,
-                    OrderDate = new DateTime(2025, 05, 25),
-                    Status = "Completed",
-                    TotalPrice = 17.5m,
-                    DeliveryDate = new DateTime(2025, 05, 28)
-                }
-            );
-
-            // ✅ Seed OrderProduct Mapping
-            modelBuilder.Entity<OrderProduct>().HasData(
-                new OrderProduct
-                {
-                    Id = 1,
-                    OrderId = 1,
-                    ProductId = 1,
-                    Quantity = 5,
-                    PricePerKgAtPurchaseTime = 3.5m
-                }
-            );
+          
         }
         }
     }

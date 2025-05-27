@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using LocalFarmerMarket.Services;
 using LocalFarmerMarket.Core.Models.RequestDTOs;
 using LocalFarmerMarket.Core.Models.ResponseDTOs;
+using LocalFarmerMarket.Core.Models;
 
 namespace LocalFarmerMarket.Controllers
 {
@@ -30,6 +31,8 @@ namespace LocalFarmerMarket.Controllers
             {
                 HttpContext.Session.SetString("Token", response.Token);
 
+
+
                 _apiClient.SetBearerToken(response.Token);
                 return RedirectToAction("Index", "Home");
             }
@@ -47,7 +50,7 @@ namespace LocalFarmerMarket.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var response = await _apiClient.PostAsync<RegisterResponse>("auth/register", model);
+            var response = await _apiClient.PostAsync<RegisterResponse>("api/Auth/register", model);
 
             if (response != null && !string.IsNullOrEmpty(response.Token))
             {

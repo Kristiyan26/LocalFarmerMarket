@@ -29,11 +29,6 @@ public class Product : BaseEntity
 
     public virtual Category Category { get; set; }
 
-
-    [JsonIgnore]
-    public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     public string ImageUrl { get; set; }
-
-
 
 }

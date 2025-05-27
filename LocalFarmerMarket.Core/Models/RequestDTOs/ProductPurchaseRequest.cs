@@ -9,7 +9,7 @@ namespace LocalFarmerMarket.Core.Models.RequestDTOs
     public class ProductPurchaseRequest
     {
         public int ProductId { get; set; }
-        public double Quantity { get; set; }
+        public int Quantity { get; set; }
         public int CustomerId { get; set; }
     }
 }

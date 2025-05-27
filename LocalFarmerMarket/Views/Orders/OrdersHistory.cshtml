@@ -1,0 +1,29 @@
+﻿@model LocalFarmerMarket.ViewModels.Orders.OrdersHistoryVM
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📦 Your Order History</h1>
+
+    @if (Model.Orders.Any())
+    {
+        <div class="row">
+            @foreach (var order in Model.Orders)
+            {
+                <div class="col-md-6">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">🛒 @order.ProductName</h5>
+                            <p class="text-muted">Ordered on: @order.OrderDate.ToString("yyyy-MM-dd")</p>
+                            <p>Quantity: <b>@order.QuantityOrdered kg</b></p>
+                            <p>Total Price: <b>@order.TotalPrice €</b></p>
+                            <p>Status: <span class="fw-bold text-success">@order.Status</span></p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-center mt-4 text-muted">No orders found.</p>
+    }
+</div>

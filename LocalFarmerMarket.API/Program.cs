@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.Extensions.FileProviders;
 
 namespace LocalFarmerMarket.API
 {
@@ -40,7 +41,6 @@ namespace LocalFarmerMarket.API
             builder.Services.AddScoped<ProductsRepository>();
             builder.Services.AddScoped<CategoriesRepository>();
             builder.Services.AddScoped<OrdersRepository>();
-            builder.Services.AddScoped<OrderProductRepository>();
             builder.Services.AddScoped<CustomersRepository>();
             builder.Services.AddScoped<FarmersRepository>();
 
@@ -146,6 +146,14 @@ namespace LocalFarmerMarket.API
             app.UseAuthorization();
 
             app.MapControllers();
+
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+                RequestPath = "/images"
+            });
+
 
             app.Use(async (context, next) =>
             {

@@ -18,10 +18,13 @@ namespace LocalFarmerMarket.Core.Models
         public DateTime DeliveryDate { get; set; }
 
         [Required]
+        public int Quantity { get; set; }
 
-        public string Status { get; set; } // e.g., "Pending", "Completed"
+        [Required]
 
-    [JsonIgnore]
-        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        public string Status { get; set; } 
+        public int ProductId { get; set; } 
+        public virtual Product Product { get; set; }
+
     }
 }

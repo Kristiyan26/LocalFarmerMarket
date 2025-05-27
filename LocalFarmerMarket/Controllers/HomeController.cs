@@ -21,7 +21,7 @@ namespace LocalFarmerMarket.Controllers
             }
 
             var productList = await _apiClient.GetAsync("api/Products/");
-            var products = productList.Products; // ✅ Extract the actual list of products
+            var products = productList.Products; 
 
 
             var categories = products.Select(p => p.Category).Distinct().ToList();
@@ -39,6 +39,9 @@ namespace LocalFarmerMarket.Controllers
 
             return View(viewModel);
         }
+
+
+
 
     }
 }

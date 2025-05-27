@@ -7,6 +7,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 using LocalFarmerMarket.Core.Models.ResponseDTOs;
+using LocalFarmerMarket.Core.Models;
+using System.Reflection.Metadata;
+using System.Text.Json.Serialization;
+
 
 namespace LocalFarmerMarket.Services
 {
@@ -48,6 +52,34 @@ namespace LocalFarmerMarket.Services
                 CurrentPage = document.RootElement.GetProperty("currentPage").GetInt32(),
                 ItemsPerPage = document.RootElement.GetProperty("itemsPerPage").GetInt32(),
                 Products = productsList // ✅ Corrected extraction
+            };
+        }
+
+        public async Task<OrderListResponse> GetAsyncOrders(string endpoint)
+        {
+            var response = await _httpClient.GetAsync(endpoint);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var jsonDocument = JsonDocument.Parse(responseContent);
+            var ordersJson = jsonDocument.RootElement.GetProperty("$values").GetRawText(); // ✅ Extracts the actual orders list
+
+
+            
+            var options = new JsonSerializerOptions
+            {   
+                PropertyNameCaseInsensitive = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+            };
+
+            var dtoOrders = JsonSerializer.Deserialize<List<OrderDTO>>(ordersJson, options); 
+
+      
+
+            return new OrderListResponse
+            {
+                Orders = dtoOrders.ToList() 
             };
         }
 

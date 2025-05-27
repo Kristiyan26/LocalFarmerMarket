@@ -9,5 +9,6 @@ namespace LocalFarmerMarket.ViewModels.Home
 
         public List<Category> Categories { get; set; }
 
+
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocalFarmerMarket.Data.Migrations
 {
     [DbContext(typeof(LocalFarmerMarketDbContext))]
-    [Migration("20250525131541_Init")]
-    partial class Init
+    [Migration("20250526200651_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,7 +124,7 @@ namespace LocalFarmerMarket.Data.Migrations
                             Email = "Krisko@mail.bg",
                             FirstName = "Kristiyan",
                             LastName = "Lyubenov",
-                            Password = "AQAAAAIAAYagAAAAENPrhUZYVcpP8EZ8E8FL/DggYjAqGiywXK4X4Z/lcA/oLoQCK7Qehr9q4Bdql026tg==",
+                            Password = "AQAAAAIAAYagAAAAECgEUuBVWEJELb+K6dOKHWN43jABCsrHBu1liZNCw7v7FEM7t05CYzJpXa13+Qca7w==",
                             PhoneNumber = "088888888",
                             Role = "Customer",
                             Username = "KriskoVliza"
@@ -190,7 +190,7 @@ namespace LocalFarmerMarket.Data.Migrations
                             Email = "johndoe@farm.com",
                             FirstName = "John",
                             LastName = "Doe",
-                            Password = "AQAAAAIAAYagAAAAEOdkEizlr3qoQCK2caqF/6r/WdhejcU9nL2vO0p5UFrcEYHMtvXwfsm+iavjN1RLew==",
+                            Password = "AQAAAAIAAYagAAAAEDVsXccfwWvlagmOZHjs0yX3l89FOeEoObyIC5DmKFKSzOm6uebED8Ed54F5TSJ1uA==",
                             PhoneNumber = "0888123456",
                             Role = "Farmer",
                             Username = "JohnFarmer"
@@ -214,6 +214,9 @@ namespace LocalFarmerMarket.Data.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -225,57 +228,9 @@ namespace LocalFarmerMarket.Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CustomerId = 1,
-                            DeliveryDate = new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed",
-                            TotalPrice = 17.5m
-                        });
-                });
-
-            modelBuilder.Entity("LocalFarmerMarket.Core.Models.OrderProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("PricePerKgAtPurchaseTime")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProducts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            OrderId = 1,
-                            PricePerKgAtPurchaseTime = 3.5m,
-                            ProductId = 1,
-                            Quantity = 5.0
-                        });
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Product", b =>
@@ -346,24 +301,13 @@ namespace LocalFarmerMarket.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("LocalFarmerMarket.Core.Models.OrderProduct", b =>
-                {
-                    b.HasOne("LocalFarmerMarket.Core.Models.Order", "Order")
-                        .WithMany("OrderProducts")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Product", "Product")
-                        .WithMany("OrderProducts")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("Customer");
 
                     b.Navigation("Product");
                 });
@@ -400,16 +344,6 @@ namespace LocalFarmerMarket.Data.Migrations
             modelBuilder.Entity("LocalFarmerMarket.Core.Models.Farmer", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("LocalFarmerMarket.Core.Models.Order", b =>
-                {
-                    b.Navigation("OrderProducts");
-                });
-
-            modelBuilder.Entity("Product", b =>
-                {
-                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

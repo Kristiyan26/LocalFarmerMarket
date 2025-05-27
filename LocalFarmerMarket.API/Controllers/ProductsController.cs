@@ -19,17 +19,16 @@ namespace LocalFarmerMarket.API.Controllers
         private readonly FarmersRepository _farmersRepo;
         private readonly CategoriesRepository _categoriesRepo;
         private readonly OrdersRepository _ordersRepo;
-        private readonly OrderProductRepository _orderProductsRepo;
+  
 
         public ProductsController(ProductsRepository productsRepo,
             FarmersRepository farmersRepo,CategoriesRepository categoriesRepo,
-            OrdersRepository ordersRepo, OrderProductRepository orderProductsRepo)
+            OrdersRepository ordersRepo)
         {
             _productsRepo = productsRepo;
             _farmersRepo = farmersRepo;
             _categoriesRepo = categoriesRepo;
             _ordersRepo = ordersRepo;
-            _orderProductsRepo = orderProductsRepo;
         }
         [HttpGet]
         public IActionResult GetAll([FromQuery] int? categoryId, [FromQuery] int page = 1, [FromQuery] int itemsPerPage = 6)
@@ -116,7 +115,7 @@ namespace LocalFarmerMarket.API.Controllers
             Console.WriteLine($"Authorization Header: {Request.Headers["Authorization"]}");
 
 
-
+            Console.WriteLine(request.Quantity);
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -148,23 +147,17 @@ namespace LocalFarmerMarket.API.Controllers
             {
                 CustomerId = request.CustomerId,
                 OrderDate = DateTime.UtcNow,
+                Quantity= request.Quantity,
                 Status = "Pending",
                 TotalPrice = totalPrice,
-                DeliveryDate = DateTime.UtcNow.AddDays(3) // Assuming delivery in 3 days
+                DeliveryDate = DateTime.UtcNow.AddDays(3), // Assuming delivery in 3 days
+                ProductId = request.ProductId,  
             };
 
             _ordersRepo.Save(newOrder);
 
  
-            var orderProduct = new OrderProduct
-            {
-                OrderId = newOrder.Id,
-                ProductId = request.ProductId,
-                Quantity = request.Quantity,
-                PricePerKgAtPurchaseTime = product.PricePerKg
-            };
 
-            _orderProductsRepo.Save(orderProduct);
 
             product.QuantityAvailable -= request.Quantity;
             _productsRepo.Save(product);
@@ -220,30 +213,30 @@ namespace LocalFarmerMarket.API.Controllers
         }
 
 
-        [Authorize(Roles = "Customer")]
-        [HttpGet("purchased")]
-        public IActionResult GetPurchasedProducts()
-        {
+        //[Authorize(Roles = "Customer")]
+        //[HttpGet("purchased")]
+        //public IActionResult GetPurchasedProducts()
+        //{
           
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                Console.WriteLine("UserId claim is missing.");
+        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        //    if (userIdClaim == null)
+        //    {
+        //        Console.WriteLine("UserId claim is missing.");
 
-                return Unauthorized(new { message = "Invalid authentication token." });
-            }
+        //        return Unauthorized(new { message = "Invalid authentication token." });
+        //    }
 
-            var loggedInCustomerId = int.Parse(userIdClaim.Value);
+        //    var loggedInCustomerId = int.Parse(userIdClaim.Value);
 
-            var orders = _ordersRepo.GetAll(o => o.CustomerId == loggedInCustomerId);
+        //    var orders = _ordersRepo.GetAll(o => o.CustomerId == loggedInCustomerId);
 
-            var purchasedProducts = orders
-                .SelectMany(o => o.OrderProducts)
-                .Select(op => op.Product)
-                .Distinct()
-                .ToList();
+        //    var purchasedProducts = orders
+        //        .SelectMany(o => o.OrderProducts)
+        //        .Select(op => op.Product)
+        //        .Distinct()
+        //        .ToList();
 
-            return Ok(new { PurchasedProducts = purchasedProducts });
-        }
+        //    return Ok(new { PurchasedProducts = purchasedProducts });
+        //}
     }
 }

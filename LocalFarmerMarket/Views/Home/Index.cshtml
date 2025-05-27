@@ -1,10 +1,32 @@
 ﻿@model LocalFarmerMarket.ViewModels.Home.IndexVM
 
-<!-- 🛒 Shop Page -->
+<!-- 🌿 Fresh & Organic Market -->
 <div class="container mt-5">
     <h1 class="text-center mb-4">🌿 Fresh & Organic Market</h1>
 
-    <!-- Responsive Grid for Products -->
+    <!-- 🏷️ Category Filter Dropdown -->
+    <form method="get" action="@Url.Action("Index", "Home")">
+        <div class="mb-3">
+            <label for="categoryFilter" class="form-label">Filter by Category:</label>
+            <select id="categoryFilter" name="categoryFilter" class="form-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                @foreach (var category in Model.Categories)
+                {
+                    if (category.Name == ViewBag.SelectedCategory)
+                    {
+                        <option value="@category.Name" selected>@category.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@category.Name">@category.Name</option>
+                    }
+                }
+            </select>
+
+        </div>
+    </form>
+
+    <!-- 🛒 Product Grid -->
     <div class="row">
         @foreach (var product in Model.Products)
         {
@@ -17,7 +39,13 @@
                         <p class="fw-bold text-success">💰 @product.PricePerKg €/kg</p>
                         <p>📦 Available: <span class="fw-bold">@product.QuantityAvailable kg</span></p>
                         <p>🌱 Harvested on: <span class="fw-bold">@product.HarvestDate.ToString("yyyy-MM-dd")</span></p>
-                        <a href="#" class="btn btn-primary w-100 mt-2">🛒 Add to Cart</a>
+
+                        <!-- Quantity Input -->
+                        <input type="number" id="quantity-@product.Id" class="form-control mt-2"
+                               placeholder="Enter kg" min="1" max="@product.QuantityAvailable" required>
+
+                        <!-- Buy Now Button -->
+                        <button class="btn btn-success w-100 mt-2" onclick="buyProduct(@product.Id)">🛒 Buy Now</button>
                     </div>
                 </div>
             </div>
@@ -25,20 +53,41 @@
     </div>
 </div>
 
-<!-- Custom Styling -->
-<style>
-    .product-card {
-        border-radius: 10px;
-        transition: transform 0.3s ease-in-out;
-    }
+<script>
+    async function buyProduct(productId) {
+        console.log('product id ' + productId);
 
-    .product-card:hover {
-        transform: scale(1.05);
-    }
+        var quantityInput = document.getElementById(`quantity-${productId}`);
+        var quantity = quantityInput ? quantityInput.value : null;
 
-    .card-img-top {
-        height: 200px;
-        object-fit: cover;
-        border-radius: 10px 10px 0 0;
+        console.log('product quantity ' + quantity);
+
+        if (!quantity || quantity <= 0) {
+            alert("Please enter a valid quantity.");
+            return;
+        }
+
+        try {
+            const response = await fetch('/Orders/Buy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ProductId: Number(productId),
+                    Quantity: Number(quantity)
+                })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                window.location.href = "/Orders/OrdersHistory";
+            } else {
+                alert(result.message || "Failed to complete purchase.");
+            }
+        } catch (error) {
+            console.error("Error purchasing product:", error);
+            alert("Something went wrong. Please try again.");
+        }
     }
-</style>
+</script>
